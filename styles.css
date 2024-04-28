@@ -1,0 +1,54 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+}
+
+.top-bar {
+    background-color: black;
+    color: white;
+    padding: 10px;
+    text-align: center;
+}
+
+.content {
+    padding: 20px;
+    text-align: center;
+}
+
+.carousel-container {
+    width: 100%;
+    overflow: hidden;
+}
+
+.carousel {
+    display: flex;
+    width: calc(100% * 3);
+    height: 100vh; 
+}
+
+.carousel-images {
+    display: flex;
+    width: calc(100% / 3 * 6); 
+}
+
+.carousel-images img {
+    width: 300px;
+    height: 600px; 
+}
+
+.button-container {
+    text-align: center;
+}
+
+.button {
+    display: inline-block;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    background-color: rgb(83, 13, 163);
+    color: white;
+    pointer-events: none;
+}
+
