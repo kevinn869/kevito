@@ -15,12 +15,23 @@ document.addEventListener("DOMContentLoaded", async function() {
     }
 
     async function buscarFilmes(qtd) {
-        const url = apiUrl + qtd; 
+        const url = "https://movies.slideworks.cc/movies?limit=" + qtd;
         try {
             const response = await fetch(url);
             const data = await response.json();
-            console.log(data); 
-            return data.results; 
+            //console.log(data); // Verifique os dados recebidos da API
+    
+            // Mapear os resultados e criar um novo objeto com os campos desejados para cada filme
+            const filmes = data.data.map(movie => ({
+                title: movie.title,
+                image_url: movie.image_url,
+                rating: movie.rating,
+                year: movie.year,
+                crew: movie.crew
+            }));
+    
+            // Retornar um objeto com a propriedade 'data' contendo o array de filmes
+            return { data: filmes };
         } catch (error) {
             console.error("Erro ao buscar filmes:", error);
         }
@@ -52,4 +63,49 @@ document.addEventListener("DOMContentLoaded", async function() {
             }, 500);
         }
     }, 3000);
+
+    try {
+        const filmes = await buscarFilmes(32);
+        const filmesContainer = document.getElementById('filmesContainer');
+
+        // Função para criar e adicionar elementos HTML para cada filme
+        function criarFilmeElement(filme) {
+            const filmeDiv = document.createElement('div');
+            filmeDiv.classList.add('filme');
+
+            const img = document.createElement('img');
+            img.src = filme.image_url;
+            img.alt = filme.title;
+
+            const titulo = document.createElement('h2');
+            titulo.textContent = filme.title;
+
+            const rating = document.createElement('p');
+            rating.textContent = `Classificação: ${filme.rating}`;
+
+            const ano = document.createElement('p');
+            ano.textContent = `Ano: ${filme.year}`;
+
+            const equipe = document.createElement('p');
+            equipe.textContent = `Equipe: ${filme.crew}`;
+
+            filmeDiv.appendChild(img);
+            filmeDiv.appendChild(titulo);
+            filmeDiv.appendChild(ano);
+            filmeDiv.appendChild(equipe);
+            filmeDiv.appendChild(rating);
+
+            filmesContainer.appendChild(filmeDiv);
+        }
+
+        // Verifica se filmes possui a propriedade "data" antes de iterar sobre ela
+        if (filmes && filmes.data) {
+            filmes.data.forEach(criarFilmeElement);
+        } else {
+            console.error("Os dados de filmes não estão no formato esperado.");
+        }
+    } catch (error) {
+        console.error("Erro ao buscar e exibir filmes:", error);
+    }
+
 });
