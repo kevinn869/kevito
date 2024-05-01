@@ -44,7 +44,6 @@ document.addEventListener("DOMContentLoaded", async function() {
     
 
     async function buscarFilmes(pagina, qtd) {
-        //const url = "https://movies.slideworks.cc/movies?limit=" + qtd;
         const url = "https://movies.slideworks.cc/movies?page=" + pagina + "&limit=" + qtd;
         try {
             const response = await fetch(url);
@@ -92,7 +91,7 @@ setInterval(() => {
 let pagina_atual = 1;
 
 async function carregarFilmes() {
-  try {
+  try {    
     const filmes = await buscarFilmes(pagina_atual, 32);
     const filmesContainer = document.getElementById('filmesContainer');
     filmesContainer.innerHTML = ''; // Limpa o conteúdo atual
@@ -147,15 +146,11 @@ async function carregarFilmes() {
       anteriorBtn.parentElement.classList.remove('disabled');
     }
 
-    // Ativa a classe "disabled" no botão correspondente à página atual
-    const botoesPagina = document.querySelectorAll(".page-item button");
-    botoesPagina.forEach((botao, indice) => {
-      if (indice === pagina_atual) {
-        botao.classList.add('disabled');
+    if (pagina_atual >= 8) {
+        proximoBtn.parentElement.classList.add('disabled');
       } else {
-        botao.classList.remove('disabled');
+        proximoBtn.parentElement.classList.remove('disabled');
       }
-    });
 
   } catch (error) {
     console.error("Erro ao buscar e exibir filmes:", error);
@@ -180,9 +175,6 @@ const anteriorBtn = document.querySelector(".page-item:first-child button");
 proximoBtn.addEventListener("click", proximoPagina);
 anteriorBtn.addEventListener("click", anteriorPagina);
 
-// Carregar filmes na primeira página ao carregar a página
 carregarFilmes();
-
-
 
 });

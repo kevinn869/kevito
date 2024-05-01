@@ -109,3 +109,12 @@ document.addEventListener("DOMContentLoaded", async function() {
     }
 
 });
+    // Ativa a classe "disabled" no botão correspondente à página atual 
+    /*const botoesPagina = document.querySelectorAll(".page-item button");
+    botoesPagina.forEach((botao, indice) => {
+      if (indice === pagina_atual) {
+        botao.classList.add('disabled');
+      } else {
+        botao.classList.remove('disabled');
+      }
+    });*/
