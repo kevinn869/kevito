@@ -7,7 +7,6 @@ document.addEventListener("DOMContentLoaded", async function() {
             const response = await fetch(apiUrl);
             const data = await response.json();
             const imageUrls = data.data.map(movie => movie.image_url);
-            // Retorna duas vezes o mesmo conjunto de URLs de imagem
             return imageUrls.concat(imageUrls);
         } catch (error) {
             console.error("Erro ao buscar imagens para o carrossel:", error);
@@ -44,8 +43,9 @@ document.addEventListener("DOMContentLoaded", async function() {
     });
     
 
-    async function buscarFilmes(qtd) {
-        const url = "https://movies.slideworks.cc/movies?limit=" + qtd;
+    async function buscarFilmes(pagina, qtd) {
+        //const url = "https://movies.slideworks.cc/movies?limit=" + qtd;
+        const url = "https://movies.slideworks.cc/movies?page=" + pagina + "&limit=" + qtd;
         try {
             const response = await fetch(url);
             const data = await response.json();
@@ -89,47 +89,100 @@ setInterval(() => {
     }
 }, 3000);
 
+let pagina_atual = 1;
 
-    try {
-        const filmes = await buscarFilmes(32);
-        const filmesContainer = document.getElementById('filmesContainer');
+async function carregarFilmes() {
+  try {
+    const filmes = await buscarFilmes(pagina_atual, 32);
+    const filmesContainer = document.getElementById('filmesContainer');
+    filmesContainer.innerHTML = ''; // Limpa o conteúdo atual
 
-        function criarFilmeElement(filme) {
-            const filmeDiv = document.createElement('div');
-            filmeDiv.classList.add('filme');
+    function criarFilmeElement(filme) {
+      const filmeDiv = document.createElement('div');
+      filmeDiv.classList.add('filme');
 
-            const img = document.createElement('img');
-            img.src = filme.image_url;
-            img.alt = filme.title;
+      const img = document.createElement('img');
+      img.src = filme.image_url;
+      img.alt = filme.title;
 
-            const titulo = document.createElement('h2');
-            titulo.textContent = filme.title;
+      const titulo = document.createElement('h2');
+      titulo.textContent = filme.title;
+      titulo.id = 'numero_pagina'; // Troca a classe para o ID numero_pagina
 
-            const rating = document.createElement('p');
-            rating.textContent = `Classificação: ${filme.rating}`;
+      const rating = document.createElement('p');
+      rating.textContent = `Classificação: ${filme.rating}`;
 
-            const ano = document.createElement('p');
-            ano.textContent = `Ano: ${filme.year}`;
+      const ano = document.createElement('p');
+      ano.textContent = `Ano: ${filme.year}`;
 
-            const equipe = document.createElement('p');
-            equipe.textContent = `Equipe: ${filme.crew}`;
+      const equipe = document.createElement('p');
+      equipe.textContent = `Equipe: ${filme.crew}`;
 
-            filmeDiv.appendChild(img);
-            filmeDiv.appendChild(titulo);
-            filmeDiv.appendChild(ano);
-            filmeDiv.appendChild(equipe);
-            filmeDiv.appendChild(rating);
+      filmeDiv.appendChild(img);
+      filmeDiv.appendChild(titulo);
+      filmeDiv.appendChild(ano);
+      filmeDiv.appendChild(equipe);
+      filmeDiv.appendChild(rating);
 
-            filmesContainer.appendChild(filmeDiv);
-        }
-
-        if (filmes && filmes.data) {
-            filmes.data.forEach(criarFilmeElement);
-        } else {
-            console.error("Os dados de filmes não estão no formato esperado.");
-        }
-    } catch (error) {
-        console.error("Erro ao buscar e exibir filmes:", error);
+      filmesContainer.appendChild(filmeDiv);
     }
+
+    if (filmes && filmes.data) {
+      filmes.data.forEach(criarFilmeElement);
+    } else {
+      console.error("Os dados de filmes não estão no formato esperado.");
+    }
+
+    // Altera o valor do elemento com o ID numero_pagina para o número da página atual
+    const numeroPagina = document.getElementById('numero_pagina');
+    if (numeroPagina) {
+      numeroPagina.textContent = "Página " + pagina_atual;
+    }
+
+    // Habilita ou desabilita o botão "Anterior" dependendo da página atual
+    const anteriorBtn = document.querySelector(".page-item:first-child button");
+    if (pagina_atual === 1) {
+      anteriorBtn.parentElement.classList.add('disabled');
+    } else {
+      anteriorBtn.parentElement.classList.remove('disabled');
+    }
+
+    // Ativa a classe "disabled" no botão correspondente à página atual
+    const botoesPagina = document.querySelectorAll(".page-item button");
+    botoesPagina.forEach((botao, indice) => {
+      if (indice === pagina_atual) {
+        botao.classList.add('disabled');
+      } else {
+        botao.classList.remove('disabled');
+      }
+    });
+
+  } catch (error) {
+    console.error("Erro ao buscar e exibir filmes:", error);
+  }
+}
+
+async function proximoPagina() {
+  pagina_atual++;
+  await carregarFilmes();
+}
+
+async function anteriorPagina() {
+  if (pagina_atual > 1) {
+    pagina_atual--;
+    await carregarFilmes();
+  }
+}
+
+const proximoBtn = document.querySelector(".page-item:last-child button");
+const anteriorBtn = document.querySelector(".page-item:first-child button");
+
+proximoBtn.addEventListener("click", proximoPagina);
+anteriorBtn.addEventListener("click", anteriorPagina);
+
+// Carregar filmes na primeira página ao carregar a página
+carregarFilmes();
+
+
 
 });

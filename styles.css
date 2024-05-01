@@ -19,13 +19,13 @@ body, html {
 
 .carousel-container {
     width: 100%;
-    overflow: hidden;
-}
+    overflow: hidden; 
+  }
 
 .carousel {
     display: flex;
     width: calc(100% * 3);
-    height: 100vh; 
+    height: 75vh; 
 }
 
 .carousel-images {
@@ -65,9 +65,33 @@ body, html {
     border-radius: 5px;
     padding: 10px;
   }
-  
+
   .filme img {
     width: 100%;
     border-radius: 5px;
     margin-bottom: 10px;
+  }
+
+  .pagination {
+    justify-content: center !important;
+  }
+  .page-item.disabled .page-link {
+    background-color: rgb(184, 148, 184) !important;
+    color: white !important;
+  }
+  .page-link {
+    background-color: purple !important;
+    color: white !important;
+    border-color: rgb(255, 255, 255) !important;
+  }
+  .page-link.disabled {
+    background-color: rgb(184, 148, 184) !important;
+    color: white !important;
+    border-color: rgb(255, 255, 255) !important;
+  }
+
+  .page-link:hover {
+    background-color: #6b0f88 !important; 
+    color: white !important;
+    border-color: #6b0f88 !important; 
   }
