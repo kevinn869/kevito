@@ -204,7 +204,5 @@ function ocultarParametroUrl(nome) {
           botao.parentElement.classList.remove('disabled');
       }
   });
-  console.log('disable '+btndisable);
-  console.log('paginas_atual ' + pagina_atual);
   carregarFilmes();
 });
