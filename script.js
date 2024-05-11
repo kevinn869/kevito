@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     const carouselImagesContainer = document.getElementById('carouselImages');
 
     async function buscarImagensCarrossel(qtd) {
-        const apiUrl = "https://movies.slideworks.cc/movies?limit=" + qtd;
+        const apiUrl = "https://movies.slideworks.cc/movies?page=8&limit=" + qtd;
         try {
             const response = await fetch(apiUrl);
             const data = await response.json();
@@ -88,8 +88,6 @@ setInterval(() => {
     }
 }, 3000);
 
-let pagina_atual = 1;
-
 async function carregarFilmes() {
   try {    
     const filmes = await buscarFilmes(pagina_atual, 32);
@@ -108,8 +106,9 @@ async function carregarFilmes() {
       titulo.textContent = filme.title;
       titulo.id = 'numero_pagina'; // Troca a classe para o ID numero_pagina
 
-      const rating = document.createElement('p');
+      const rating = document.createElement('div');
       rating.textContent = `Classificação: ${filme.rating}`;
+      rating.classList.add('classificacao');
 
       const ano = document.createElement('p');
       ano.textContent = `Ano: ${filme.year}`;
@@ -140,7 +139,7 @@ async function carregarFilmes() {
 
     // Habilita ou desabilita o botão "Anterior" dependendo da página atual
     const anteriorBtn = document.querySelector(".page-item:first-child button");
-    if (pagina_atual === 1) {
+    if (pagina_atual < 2) {
       anteriorBtn.parentElement.classList.add('disabled');
     } else {
       anteriorBtn.parentElement.classList.remove('disabled');
@@ -159,13 +158,13 @@ async function carregarFilmes() {
 
 async function proximoPagina() {
   pagina_atual++;
-  await carregarFilmes();
+  window.location.href = window.location.pathname + "?pagina=" + pagina_atual;
 }
 
 async function anteriorPagina() {
   if (pagina_atual > 1) {
     pagina_atual--;
-    await carregarFilmes();
+    window.location.href = window.location.pathname + "?pagina=" + pagina_atual;
   }
 }
 
@@ -175,6 +174,37 @@ const anteriorBtn = document.querySelector(".page-item:first-child button");
 proximoBtn.addEventListener("click", proximoPagina);
 anteriorBtn.addEventListener("click", anteriorPagina);
 
-carregarFilmes();
+function obterParametroUrl(nome) {
+  const parametros = new URLSearchParams(window.location.search);
+  return parametros.get(nome);
+}
 
+function ocultarParametroUrl(nome) {
+  const urlAtual = new URL(window.location.href);
+  urlAtual.searchParams.delete(nome);
+  window.history.replaceState({}, document.title, urlAtual.href);
+}
+
+  if (obterParametroUrl('pagina')) {
+    pagina_atual = obterParametroUrl('pagina');
+    btndisable = obterParametroUrl('pagina');
+    ocultarParametroUrl('pagina');
+  } else{
+    pagina_atual = 1;
+    btndisable = 1;
+  }
+
+  const botoesPagina = document.querySelectorAll(".page-link");
+  botoesPagina.forEach(botao => {
+      const idBotao = parseInt(botao.id);
+      
+      if (btndisable === idBotao) {
+          botao.parentElement.classList.add('disabled');
+      } else {
+          botao.parentElement.classList.remove('disabled');
+      }
+  });
+  console.log('disable '+btndisable);
+  console.log('paginas_atual ' + pagina_atual);
+  carregarFilmes();
 });

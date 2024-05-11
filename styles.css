@@ -2,7 +2,7 @@ body, html {
     margin: 0;
     padding: 0;
     height: 100%;
-    overflow-y: auto;
+    overflow-y: auto; 
 }
 
 .top-bar {
@@ -47,9 +47,22 @@ body, html {
     padding: 10px 20px;
     border: none;
     border-radius: 20px;
-    background-color: rgb(83, 13, 163);
+    background-color: #6b0f88;
     color: white;
     pointer-events: none;
+}
+
+.classificacao {
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  display: inline-block;
+  padding: 7px 7px;
+  border: none;
+  border-radius: 20px;
+  background-color: #6b0f88;
+  color: white;
+  pointer-events: none;
 }
 
 .container {
@@ -59,12 +72,14 @@ body, html {
   }
   
   .filme {
+    position: relative;
     width: 300px;
+    height: 700px;
     margin-bottom: 20px;
-    border: 1px solid #ccc;
+    border: 1px solid #a968bd;
     border-radius: 5px;
     padding: 10px;
-  }
+}
 
   .filme img {
     width: 100%;
